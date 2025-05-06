@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <title>UdeC - Gestión de Estudiantes</title>
+        <link rel="stylesheet" href="../Facultad/Facultad.css">
+        <script src="Estudiante.js"></script>
+    </head>
+    <body>
+        <h1>Gestión de Estudiantes</h1>
+        <div class="menu">
+            <button onclick="mostrarSeccion('registrarEstudiante')">Registrar Estudiante</button>
+            <button onclick="mostrarSeccion('consultarEstudiante')">Consultar Estudiante</button>
+            <button onclick="mostrarSeccion('modificarEstudiante')">Modificar Estudiante</button>
+            <button onclick="mostrarSeccion('eliminarEstudiante')">Eliminar Estudiante</button>
+        </div>
+        <section id="registrarEstudiante" style="display: none;">
+            <h2>Registrar Estudiante</h2>
+            <label>Nombre:</label><input type="text" id="nombre"><br>
+            <label>Tipo ID:</label><input type="text" id="tipoi"><br>
+            <label>Número ID:</label><input type="text" id="numeroi"><br>
+            x<button onclick="registrarEstudiante()">Guardar</button>
+        </section>
+
+        <section id="consultarEstudiante" style="display: none;">
+            <h2>Consultar Estudiante</h2>
+            <label>Tipo de Identificación (CC, TI, CE ...):</label><input type="text" id="tipoiC"><br>
+            <label>Número de Identificación:</label><input type="text" id="numeroiC"><br>
+            <button onclick="consultarEstudiante()">Consultar</button>
+        </section>
+        
+        <section id="modificarEstudiante" style="display: none;">
+            <h2>Modificar Estudiante</h2>
+            <label>Tipo de Identificación (CC, TI, CE ...):</label><input type="text" id="tipoiM"><br>
+            <label>Número de Identificación:</label><input type="text" id="numeroiM"><br>
+            <button onclick="modificarEstudiante()">Modificar</button>
+        </section>
+        
+        <section id="eliminarEstudiante" style="display: none;">
+            <h2>Eliminar Estudiante</h2>
+            <label>Tipo de Identificación (CC, TI, CE ...):</label><input type="text" id="tipoiE"><br>
+            <label>Número de Identificación:</label><input type="text" id="numeroiE"><br>
+            <button onclick="eliminarEstudiante()">Eliminar</button>
+        </section>
+    </body>
+</html>

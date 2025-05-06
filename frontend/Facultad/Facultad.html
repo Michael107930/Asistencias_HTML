@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universidad de Cundinamarca</title>
+    <link rel="stylesheet" href="Facultad.css">
+    <script src="Facultad.js"></script>
+</head>
+<body>
+    <form>
+        <h1>Universidad de Cundinamarca</h1>
+        <div class="contenedor">
+            <label for="nombreFacultad">Nombre de la Facultad:</label>
+            <input type="text" id="nombreFacultad" placeholder="Ej: Facultad de Ingeniería">
+            <button onclick="consultarFacultad()">Consultar Facultad</button>
+            <button onclick="modificarFacultad()">Modificar Facultad</button>
+            <div id="resultado" class="resultado" style="display:none;"></div>
+        </div>
+    </form>
+</body>
+</html>
+
