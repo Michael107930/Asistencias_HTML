@@ -1,5 +1,5 @@
-const baseURLAsignaturas = "https://ejemplodedsws.netlify.app/.netlify/functions/asignaturas"; 
-const baseURLEstudiantes = "https://ejemplodedsws.netlify.app/.netlify/functions/estudiantes";
+const baseURLAsignaturas = "https://sistemasgestionasistenciasudec.netlify.app/.netlify/functions/asignaturas"; 
+const baseURLEstudiantes = "https://sistemasgestionasistenciasudec.netlify.app/.netlify/functions/estudiantes";
 
 function mostrarSeccion(id) {
     const secciones = document.querySelectorAll("section");
