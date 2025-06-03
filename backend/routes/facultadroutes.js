@@ -1,15 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const facultadcontrollers = require("../controllers/facultadcontrollers");
+const {
+  actualizarFacultad,
+  consultarFacultad,
+} = require("../controllers/facultadcontrollers");
 
-router.get("/",facultadcontrollers.consultar);
-router.post("/",facultadcontrollers.ingresar);
-
-/* Ejemplo con parámetros
-router.route("/:id")
-.get(estudiantescontroller.consultarDetalle)
-.put(estudiantescontroller.actualizar)
-.delete(estudiantescontroller.borrar);
-*/
+router.get("/", consultarFacultad);
+router.post("/", actualizarFacultad);
 
 module.exports = router;

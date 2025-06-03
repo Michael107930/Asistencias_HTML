@@ -1,15 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const asistenciacontrollers = require("../controllers/asistenciacontrollers.js");
+const {
+  crearLista,
+  registrarAsistencia,
+} = require("../controllers/asistenciascontrollers");
 
-router.get("/",asistenciacontrollers.consultar);
-router.post("/",asistenciacontrollers.ingresar);
-
-/* Ejemplo con parámetros
-router.route("/:id")
-.get(estudiantescontroller.consultarDetalle)
-.put(estudiantescontroller.actualizar)
-.delete(estudiantescontroller.borrar);
-*/
+router.post("/", crearLista);
+router.post("/registrar", registrarAsistencia);
 
 module.exports = router;

@@ -1,13 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const estudiantescontrollers = require("../controllers/estudiantescontrollers.js");
+const {
+  guardarEstudiante,
+  consultarEstudiante,
+} = require("../controllers/estudiantescontrollers");
 
-router.get("/",estudiantescontrollers.consultar);
-router.post("/",estudiantescontrollers.ingresar);
-/*
-router.route("/:id")
-.get(estudiantescontroller.consultarDetalle)
-.put(estudiantescontroller.actualizar)
-.delete(estudiantescontroller.borrar);
-*/
+router.post("/", guardarEstudiante);
+router.get("/", consultarEstudiante);
+
 module.exports = router;

@@ -1,59 +1,50 @@
-class EstudiantesController{
-    construct(){
-    }
-    consultar(req,res){
-        try{
-            let arreglo=[];
-            let myObj = {dni: "1234", nombre: "Juan", apellidos: "Perez", email:"ejemplo@nose.com"};
-            let myObj2 = {dni: "2", nombre: "J2uan", apellidos: "222Perez", email:"222ejemplo@nose.com"};
+const { db, admin } = require("../databases/firebase");
 
-            arreglo.push (myObj);
-            arreglo.push (myObj2);
+exports.guardarEstudiante = async (req, res) => {
+  try {
+    const { nombres, tipoId, numeroId } = req.body;
 
-            let myJSON = JSON.stringify(arreglo);
-
-            res.status(200).send (myJSON);
-        }catch (err){
-            res.status(500).send(err.message);
-        }
-    }
-    ingresar(req,res){
-        try{
-            const {dni,nombre,apellidos,email} = req.body;
-            console.log ("Documento de identidad:... " + dni);
-            console.log ("Nombres con apellidos:" + nombre + " " + apellidos);
-            console.log ("email: "+ email);
-            res.status(200).send ("Funciono ok");
-        }catch (err){
-            res.status(500).send(err.message);
-        }
-    }
-    consultarDetalle(req, res) {
-        try {
-            const estudianteId = req.params.id;
-            res.status(200).send(`Obteniendo detalles del estudiante con ID: ${estudianteId}`);
-        } catch (err) {
-            res.status(500).send(err.message);
-        }
+    if (!nombres || !tipoId || !numeroId) {
+      return res.status(400).json({ error: "Faltan campos obligatorios" });
     }
 
-    actualizar(req, res) {
-        try {
-            const estudianteId = req.params.id;
-            const datosActualizados = req.body;
-            res.status(200).send(`Actualizando estudiante con ID: ${estudianteId}, Datos: ${JSON.stringify(datosActualizados)}`);
-        } catch (err) {
-            res.status(500).send(err.message);
-        }
+    // Verificar si el estudiante ya existe
+    const snapshot = await db.collection("estudiantes")
+      .where("numeroId", "==", numeroId)
+      .get();
+
+    if (!snapshot.empty) {
+      return res.status(409).json({ error: "El estudiante ya existe" });
     }
 
-    borrar(req, res) {
-        try {
-            const estudianteId = req.params.id;
-            res.status(200).send(`Eliminando estudiante con ID: ${estudianteId}`);
-        } catch (err) {
-            res.status(500).send(err.message);
-        }
+    // Crear nuevo estudiante
+    const docRef = await db.collection("estudiantes").add({
+      nombres,
+      tipoId,
+      numeroId,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    res.status(201).json({ id: docRef.id });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.consultarEstudiante = async (req, res) => {
+  try {
+    const { numeroId } = req.query;
+    const snapshot = await db.collection("estudiantes")
+      .where("numeroId", "==", numeroId)
+      .get();
+
+    if (snapshot.empty) {
+      return res.status(404).json({ error: "Estudiante no encontrado" });
     }
-}
-module.exports = new EstudiantesController();
+
+    const estudiante = snapshot.docs[0].data();
+    res.status(200).json({ ...estudiante, id: snapshot.docs[0].id });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

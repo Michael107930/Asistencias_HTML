@@ -1,35 +1,71 @@
-class FacultadController {
-    constructor() {
+const { db, admin } = require("../databases/firebase");
+
+exports.consultarFacultad = async (req, res) => {
+  try {
+    const doc = await db.collection("facultades").doc("principal").get();
+
+    if (!doc.exists) {
+      return res.status(404).json({
+        success: false,
+        error: "Facultad no encontrado",
+        sugerencia: "Crear documento inicial"
+      });
     }
 
-    consultar(req, res) {
-        try {
-            let arreglo = [];
-            let myObj = { id: "1", nombre: "Recursos Humanos", descripcion: "Gestiona el personal" };
-            let myObj2 = { id: "2", nombre: "Finanzas", descripcion: "Gestiona los recursos financieros" };
+    const data = doc.data();
+    return res.status(200).json({
+      success: true,
+      nombre: data.nombre || null,
+      ultimaActualizacion: data.updatedAt || null
+    });
 
-            arreglo.push(myObj);
-            arreglo.push(myObj2);
+  } catch (error) {
+    console.error("Error en consulta:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Error interno al consultar",
+      details: process.env.NODE_ENV === "development" ? error.message : null
+    });
+  }
+};
 
-            let myJSON = JSON.stringify(arreglo);
-
-            res.status(200).send(myJSON);
-        } catch (err) {
-            res.status(500).send(err.message);
-        }
+exports.actualizarFacultad = async (req, res) => {
+  try {
+    // 1. Validación del body
+    if (!req.body || typeof req.body.nombre !== "string") {
+      return res.status(400).json({
+        error: "Formato inválido: { nombre: string }"
+      });
     }
 
-    ingresar(req, res) {
-        try {
-            const { id, nombre, descripcion } = req.body;
-            console.log("ID del departamento: " + id);
-            console.log("Nombre del departamento: " + nombre);
-            console.log("Descripción: " + descripcion);
-            res.status(200).send("Departamento ingresado correctamente");
-        } catch (err) {
-            res.status(500).send(err.message);
-        }
-    }
-}
+    const nombre = req.body.nombre.trim();
 
-module.exports = new FacultadController();
+    // 2. Validación del contenido
+    if (nombre === "") {
+      return res.status(400).json({
+        error: "El nombre no puede estar vacío"
+      });
+    }
+
+    // 3. Actualización en Firestore
+    await db.collection("Facultades").doc("principal").set({
+      nombre,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    }, { merge: true }); // ¡Importante: merge evita sobrescribir otros campos!
+
+    // 4. Respuesta exitosa
+    return res.status(200).json({
+      success: true,
+      mensaje: `Facultad actualizada a: ${nombre}`,
+      data: { nombre }
+    });
+
+  } catch (error) {
+    console.error("Error en actualizarFacultad:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Error interno al actualizar",
+      details: process.env.NODE_ENV === "development" ? error.message : undefined
+    });
+  }
+};

@@ -1,35 +1,52 @@
-class AsistenciasController {
-    constructor() {}
+const { db, admin } = require("../databases/firebase");
 
-    consultar(req, res) {
-        try {
-            let arreglo = [];
-            let myObj = { id: "1", fecha: "2023-10-01", estudiante: "Juan Perez", estado: "Presente" };
-            let myObj2 = { id: "2", fecha: "2023-10-02", estudiante: "Maria Lopez", estado: "Ausente" };
+exports.crearLista = async (req, res) => {
+  try {
+    const { codigo, fecha, horaInicio, grupo, semestre } = req.body;
 
-            arreglo.push(myObj);
-            arreglo.push(myObj2);
+    // Verificar si la lista ya existe
+    const snapshot = await db.collection("asistencias")
+      .where("codigo", "==", codigo)
+      .where("fecha", "==", fecha)
+      .where("horaInicio", "==", horaInicio)
+      .get();
 
-            let myJSON = JSON.stringify(arreglo);
-
-            res.status(200).send(myJSON);
-        } catch (err) {
-            res.status(500).send(err.message);
-        }
+    if (!snapshot.empty) {
+      return res.status(409).json({ error: "La lista ya existe" });
     }
 
-    ingresar(req, res) {
-        try {
-            const { id, fecha, estudiante, estado } = req.body;
-            console.log("ID de asistencia: " + id);
-            console.log("Fecha: " + fecha);
-            console.log("Estudiante: " + estudiante);
-            console.log("Estado: " + estado);
-            res.status(200).send("Asistencia registrada correctamente");
-        } catch (err) {
-            res.status(500).send(err.message);
-        }
-    }
-}
+    // Crear nueva lista
+    const docRef = await db.collection("asistencias").add({
+      codigo,
+      fecha,
+      horaInicio,
+      grupo,
+      semestre,
+      estudiantes: [],
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
 
-module.exports = new AsistenciasController();
+    res.status(201).json({ id: docRef.id });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.registrarAsistencia = async (req, res) => {
+  try {
+    const { listaId, estudianteId, presente } = req.body;
+
+    // Actualizar la lista de asistencia
+    await db.collection("asistencias").doc(listaId).update({
+      estudiantes: admin.firestore.FieldValue.arrayUnion({
+        estudianteId,
+        presente,
+        fechaRegistro: new Date().toISOString(),
+      }),
+    });
+
+    res.status(200).json({ mensaje: "Asistencia registrada" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
