@@ -1,6 +1,6 @@
 const express = require("express");
 const serverless = require("serverless-http");
-const departamentoRoutes = require("../../backend/routes/facultadroutes");
+const facultadRoutes = require("../../backend/routes/facultadroutes");
 
 const app = express();
 
