@@ -1,6 +1,6 @@
 const express = require("express");
 const serverless = require("serverless-http");
-const asistenciasRoutes = require("../../Backend/routes/asistenciaroutes");
+const asistenciasRoutes = require("../../backend/routes/asistenciaroutes");
 
 const app = express();
 app.use(express.json());
