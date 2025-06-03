@@ -8,4 +8,3 @@ app.use("/estudiantes", estudiantesRoutes);
 
 exports.handler = serverless(app);
 
- 
